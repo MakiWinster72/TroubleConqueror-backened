@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -209,6 +210,43 @@ public class TroubleQuestionController extends BaseController
         }
         
         return getDataTable(list);
+    }
+
+    /**
+     * 更新错题重要性
+     */
+    @ApiOperation("更新错题重要性")
+    @PreAuthorize("@ss.hasPermi('trouble:question:edit')")
+    @Log(title = "更新错题重要性", businessType = BusinessType.UPDATE)
+    @PutMapping("/importance/{questionId}")
+    public AjaxResult updateImportance(@PathVariable("questionId") Long questionId, @RequestParam("importance") Integer importance)
+    {
+        // 验证重要性参数
+        if (importance == null || (importance < 1 || importance > 3)) {
+            return error("重要性等级必须为1（低）、2（中）或3（高）");
+        }
+        
+        // 验证错题是否存在且属于当前用户
+        TroubleQuestion existingQuestion = troubleQuestionService.selectTroubleQuestionByQuestionId(questionId);
+        if (existingQuestion == null) {
+            return error("错题不存在");
+        }
+        if (!existingQuestion.getUserId().equals(SecurityUtils.getUserId())) {
+            return error("无权限修改该错题");
+        }
+        
+        // 更新重要性
+        TroubleQuestion updateQuestion = new TroubleQuestion();
+        updateQuestion.setQuestionId(questionId);
+        updateQuestion.setImportance(importance);
+        updateQuestion.setUserId(SecurityUtils.getUserId());
+        
+        int result = troubleQuestionService.updateTroubleQuestion(updateQuestion);
+        if (result > 0) {
+            return success("更新重要性成功");
+        } else {
+            return error("更新重要性失败");
+        }
     }
 }
 

@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="answerImages"    column="answer_images"    />
         <result property="questionType"    column="question_type"    />
         <result property="tags"    column="tags"    />
+        <result property="importance"    column="importance"    />
         <result property="status"    column="status"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -22,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTroubleQuestionVo">
-        select question_id, user_id, question_content, question_images, answer_content, answer_images, question_type, tags, status, create_by, create_time, update_by, update_time, remark from trouble_question
+        select question_id, user_id, question_content, question_images, answer_content, answer_images, question_type, tags, importance, status, create_by, create_time, update_by, update_time, remark from trouble_question
     </sql>
 
     <select id="selectTroubleQuestionList" parameterType="TroubleQuestion" resultMap="TroubleQuestionResult">
@@ -35,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answerImages != null  and answerImages != ''"> and answer_images = #{answerImages}</if>
             <if test="questionType != null  and questionType != ''"> and question_type = #{questionType}</if>
             <if test="tags != null  and tags != ''"> and tags like concat('%', #{tags}, '%')</if>
+            <if test="importance != null"> and importance = #{importance}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
         order by create_time desc
@@ -47,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectFavoriteQuestionList" parameterType="TroubleQuestion" resultMap="TroubleQuestionResult">
         select tq.question_id, tq.user_id, tq.question_content, tq.question_images, 
-               tq.answer_content, tq.answer_images, tq.question_type, tq.tags, tq.status, 
+               tq.answer_content, tq.answer_images, tq.question_type, tq.tags, tq.importance, tq.status, 
                tq.create_by, tq.create_time, tq.update_by, tq.update_time, tq.remark,
                tqf.create_time as favorite_time
         from trouble_question tq
@@ -57,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="questionContent != null and questionContent != ''"> and tq.question_content like concat('%', #{questionContent}, '%')</if>
             <if test="questionType != null and questionType != ''"> and tq.question_type = #{questionType}</if>
             <if test="tags != null and tags != ''"> and tq.tags like concat('%', #{tags}, '%')</if>
+            <if test="importance != null"> and tq.importance = #{importance}</if>
         </where>
         order by tqf.create_time desc
     </select>
@@ -71,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answerImages != null">answer_images,</if>
             <if test="questionType != null">question_type,</if>
             <if test="tags != null">tags,</if>
+            <if test="importance != null">importance,</if>
             <if test="status != null">status,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -86,6 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answerImages != null">#{answerImages},</if>
             <if test="questionType != null">#{questionType},</if>
             <if test="tags != null">#{tags},</if>
+            <if test="importance != null">#{importance},</if>
             <if test="status != null">#{status},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -105,6 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answerImages != null">answer_images = #{answerImages},</if>
             <if test="questionType != null">question_type = #{questionType},</if>
             <if test="tags != null">tags = #{tags},</if>
+            <if test="importance != null">importance = #{importance},</if>
             <if test="status != null">status = #{status},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

@@ -59,6 +59,15 @@
             />
           </el-select>
         </div>
+        <div class="filter-group">
+          <span class="filter-label">重要性：</span>
+          <el-radio-group v-model="queryParams.importance" @change="handleQuery" class="filter-radios">
+            <el-radio-button label="">全部</el-radio-button>
+            <el-radio-button :label="3">高</el-radio-button>
+            <el-radio-button :label="2">中</el-radio-button>
+            <el-radio-button :label="1">低</el-radio-button>
+          </el-radio-group>
+        </div>
         <div class="view-mode-group">
           <span class="filter-label">视图：</span>
           <el-radio-group v-model="viewMode" @change="handleViewModeChange" class="view-mode-radios">
@@ -189,7 +198,8 @@ export default {
         pageSize: 12,
         questionContent: null,
         questionType: null,
-        tags: null
+        tags: null,
+        importance: ""
       }
     };
   },
@@ -231,7 +241,13 @@ export default {
         this.queryParams.tags = null;
       }
       
-      return listQuestion(this.queryParams).then(response => {
+      // 处理重要性参数：空字符串转为null
+      const queryParams = { ...this.queryParams };
+      if (queryParams.importance === "") {
+        queryParams.importance = null;
+      }
+      
+      return listQuestion(queryParams).then(response => {
         const questions = response.rows || [];
         // 检查每个错题是否已收藏（这里需要根据实际API返回的数据来判断）
         // 如果API返回了isFavorite字段，则直接使用；否则需要额外查询

@@ -76,3 +76,12 @@ export function listFavoriteQuestion(query) {
     params: query
   })
 }
+
+// 更新错题重要性
+export function updateImportance(questionId, importance) {
+  return request({
+    url: '/trouble/question/importance/' + questionId,
+    method: 'put',
+    params: { importance }
+  })
+}

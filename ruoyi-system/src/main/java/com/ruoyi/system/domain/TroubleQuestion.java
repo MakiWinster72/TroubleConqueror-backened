@@ -46,6 +46,10 @@ public class TroubleQuestion extends BaseEntity
     @Excel(name = "标签")
     private String tags;
 
+    /** 重要性等级（1=低，2=中，3=高） */
+    @Excel(name = "重要性", readConverterExp = "1=低,2=中,3=高")
+    private Integer importance;
+
     /** 状态（0正常 1删除） */
     @Excel(name = "状态", readConverterExp = "0=正常,1=删除")
     private String status;
@@ -133,6 +137,16 @@ public class TroubleQuestion extends BaseEntity
         this.tags = tags;
     }
 
+    public Integer getImportance()
+    {
+        return importance;
+    }
+
+    public void setImportance(Integer importance)
+    {
+        this.importance = importance;
+    }
+
     public String getStatus()
     {
         return status;
@@ -164,6 +178,7 @@ public class TroubleQuestion extends BaseEntity
             .append("answerImages", getAnswerImages())
             .append("questionType", getQuestionType())
             .append("tags", getTags())
+            .append("importance", getImportance())
             .append("status", getStatus())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

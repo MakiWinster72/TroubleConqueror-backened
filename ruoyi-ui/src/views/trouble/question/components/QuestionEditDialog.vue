@@ -85,6 +85,14 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="重要性" prop="importance">
+        <el-radio-group v-model="form.importance">
+          <el-radio :label="3">高</el-radio>
+          <el-radio :label="2">中</el-radio>
+          <el-radio :label="1">低</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
       <el-form-item label="标签">
         <el-select
           v-model="selectedTags"
@@ -148,6 +156,7 @@ export default {
         answerImages: "",
         questionType: "未区分",
         tags: "",
+        importance: 2,
         remark: ""
       },
       rules: {
@@ -222,6 +231,7 @@ export default {
           answerImages: response.data.answerImages || "",
           questionType: response.data.questionType || "未区分",
           tags: response.data.tags || "",
+          importance: response.data.importance || 2,
           remark: response.data.remark || ""
         };
         this.selectedTags = this.form.tags ? this.form.tags.split(',').filter(t => t.trim()) : [];

@@ -35,6 +35,15 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+          <el-form-item label="重要性" prop="importance">
+            <el-select v-model="queryParams.importance" placeholder="全部" clearable style="width: 100%">
+              <el-option label="高" :value="3" />
+              <el-option label="中" :value="2" />
+              <el-option label="低" :value="1" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -159,6 +168,18 @@
           width="100"
         />
         <el-table-column
+          label="重要性"
+          align="center"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.importance === 3" type="danger" size="small">高</el-tag>
+            <el-tag v-else-if="scope.row.importance === 2" type="warning" size="small">中</el-tag>
+            <el-tag v-else-if="scope.row.importance === 1" type="info" size="small">低</el-tag>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="标签"
           align="center"
           prop="tags"
@@ -191,6 +212,13 @@
               @click="handleFavorite(scope.row)"
               style="color: #f39c12;"
             >{{ scope.row.isFavorite ? '取消收藏' : '收藏' }}</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-flag"
+              @click="handleSetImportance(scope.row)"
+              v-hasPermi="['trouble:question:edit']"
+            >重要性</el-button>
             <el-button
               size="mini"
               type="text"
@@ -284,6 +312,18 @@
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12">
+            <el-form-item label="重要性" prop="importance">
+              <el-radio-group v-model="form.importance">
+                <el-radio :label="3">高</el-radio>
+                <el-radio :label="2">中</el-radio>
+                <el-radio :label="1">低</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="12">
             <el-form-item label="标签" prop="tags">
               <el-input
                 v-model="form.tags"
@@ -318,7 +358,7 @@
 </template>
 
 <script>
-import { listQuestion, getQuestion, delQuestion, addQuestion, updateQuestion, favoriteQuestion, unfavoriteQuestion } from "@/api/trouble/question";
+import { listQuestion, getQuestion, delQuestion, addQuestion, updateQuestion, favoriteQuestion, unfavoriteQuestion, updateImportance } from "@/api/trouble/question";
 
 export default {
   name: "Question",
@@ -349,6 +389,7 @@ export default {
         questionContent: null,
         questionType: null,
         tags: null,
+        importance: null,
       },
       // 表单参数
       form: {},
@@ -422,6 +463,7 @@ export default {
         answerImages: null,
         questionType: "未区分",
         tags: null,
+        importance: 2,
         status: "0",
         createBy: null,
         createTime: null,
@@ -519,6 +561,26 @@ export default {
           this.$modal.msgError("收藏失败");
         });
       }
+    },
+    /** 设置重要性 */
+    handleSetImportance(row) {
+      this.$prompt('请选择重要性等级', '设置重要性', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputType: 'select',
+        inputOptions: {
+          3: '高',
+          2: '中',
+          1: '低'
+        },
+        inputValue: row.importance || 2
+      }).then(({ value }) => {
+        const importance = parseInt(value);
+        return updateImportance(row.questionId, importance);
+      }).then(() => {
+        this.$modal.msgSuccess("设置成功");
+        this.getList();
+      }).catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {

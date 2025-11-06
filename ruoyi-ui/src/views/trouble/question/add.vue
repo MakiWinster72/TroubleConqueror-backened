@@ -98,7 +98,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <!-- 类型与标签 -->
+          <!-- 类型与重要性 -->
           <el-row :gutter="20" class="row-inline">
             <el-col :xs="24" :sm="12" :md="12">
               <el-form-item label="题目类型" prop="questionType">
@@ -117,6 +117,19 @@
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="12">
+              <el-form-item label="重要性" prop="importance">
+                <el-radio-group v-model="form.importance">
+                  <el-radio :label="3">高</el-radio>
+                  <el-radio :label="2">中</el-radio>
+                  <el-radio :label="1">低</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <!-- 标签 -->
+          <el-row :gutter="20" class="row-inline">
+            <el-col :xs="24" :sm="24" :md="24">
               <el-form-item label="标签">
                 <el-select
                   v-model="selectedTags"
@@ -209,6 +222,7 @@ export default {
         answerImages: "",
         questionType: "未区分",
         tags: "",
+        importance: 2,
         remark: "",
       },
       rules: {
@@ -372,6 +386,7 @@ export default {
         answerImages: "",
         questionType: "未区分",
         tags: "",
+        importance: 2,
         remark: "",
       };
       this.selectedTags = [];
