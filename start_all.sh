@@ -57,5 +57,13 @@ npm run dev &
 pids+=($!)
 cd ..
 
+# 5. AI
+echo ">>> 启动 AI 服务..."
+cd ocr
+source venv/bin/activate
+uvicorn uvicorn deepseek:app --host 0.0.0.0 --port 9001 --reload
+pids+=($!)
+cd ..
+
 echo ">>> 所有服务已启动，按 Ctrl+C 停止"
 wait
